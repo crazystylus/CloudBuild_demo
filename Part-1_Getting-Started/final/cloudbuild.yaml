@@ -1,0 +1,27 @@
+# Copyright (C) 2021  Kartik Sharma
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+steps:
+  # In this step we are building the container image
+  - name: "gcr.io/cloud-builders/docker"
+    id: Build
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"
+      - "."
+  # In this step we will be pushing the image to Google Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    id: Push
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"
+images: ["gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"]
