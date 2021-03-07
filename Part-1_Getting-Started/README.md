@@ -25,6 +25,13 @@ go run main.go
 ```
 Open browser on `http://127.0.0.1:8080` to visit the website
 
+### Cleanup
+```bash
+export GOPATH=$(go env GOPATH)
+export GOPATH=${GOPATH##*:}
+rm -rf $GOPATH/src/Part-1_Getting-Started/
+```
+
 ## Running the Cloud Build CI Pipeline
 ```bash
 git clone https://github.com/crazystylus/CloudBuild_demo.git
@@ -53,13 +60,20 @@ git remote add origin https://source.developers.google.com/p/${GOOGLE_CLOUD_PROJ
 git tag v1
 git push -u origin master --tags
 ```
-To check the Cloud Build CI Job, open cloud console and navigate to History under CloudBuild. There we can see the status of the past and currently executed build.
+To check the Cloud Build CI Job, open cloud console and navigate to History under CloudBuild. There we can see the status of the past and currently executed build. For triggering build again you can run `git tag RANDOM_TAG` and then run `git push -u master origin --tags` or simply go to triggers in the UI and manually trigger it.
 
 ### Cleanup GCP Resources
 ```bash
+# Listing triggers
+gcloud beta builds triggers list --format json | jq '.[]'
 
+# Getting the trigger id
+export TRIGGER_ID=$(gcloud beta builds triggers list --format json | jq -r '.[] | select( .triggerTemplate.repoName=="go-hello-cloudbuild") | .id')
+echo $TRIGGER_ID
 
+# Deleting the trigger
+gcloud beta builds triggers delete ${TRIGGER_ID} --quiet
+
+# Deleting Source Repostory
+gcloud source repos delete  go-hello-cloudbuild --quiet
 ```
-## References
-
-## Link to article
