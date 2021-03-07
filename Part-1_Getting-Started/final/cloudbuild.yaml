@@ -24,4 +24,18 @@ steps:
     args:
       - "push"
       - "gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"
+  # In this step we will be deploying the image to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: Deploy
+    args:
+      - "run"
+      - "deploy"
+      - "hello-cloudbuild"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"
+      - "--allow-unauthenticated"
+      - "--platform"
+      - "managed"
+      - "--region"
+      - "us-central1"
 images: ["gcr.io/$PROJECT_ID/hello-cloudbuild:v1-$SHORT_SHA"]
