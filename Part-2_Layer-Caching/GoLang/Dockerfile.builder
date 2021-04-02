@@ -10,11 +10,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-FROM python:3.8.5-slim
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt 
+FROM golang:1.15 as builder
+WORKDIR /go/src/app
+COPY go.mod .
+RUN go mod download
 #COPY . .
+#RUN CGO_ENABLED=0 GOOS=linux go build -o main ./...
 #
-#EXPOSE 8080
-#
-#CMD ["/bin/sh","-c","gunicorn wsgi:app"]
+#FROM alpine:latest
+#COPY --from=builder /go/src/app/main .
+#CMD ["./main"]
